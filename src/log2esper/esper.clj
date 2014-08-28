@@ -1,4 +1,4 @@
-(ns clj-esp.esper
+(ns log2esper.esper
   (:import [com.espertech.esper.client Configuration
                                        UpdateListener
                                        EPServiceProviderManager]))
