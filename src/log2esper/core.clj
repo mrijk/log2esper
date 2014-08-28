@@ -26,17 +26,21 @@
     (.subscribe s "")
     (.connect s "tcp://127.0.01:5555")
     (dotimes [_ num-events]
-      (println (c/parse-string (String. (.recv s))))
-      (send-event service {"user" "1" "severity" "INFO" "state" "select"} "LogDataEvent"))
+      (let [msg (c/parse-string (String. (.recv s)))]
+        (println msg)
+        (send-event service {"user" "1" 
+                             "severity" (msg "severity")
+                             "state" "select"} 
+                    "LogDataEvent")))
     (destroy-statement stmt)
     (.close s)))
 
 (def log-statement
-  "SELECT * FROM LogDataEvent()")
+  "SELECT * FROM LogDataEvent where severity = 'INFO'")
 
 (defn log-handler
   [new-events]
   (println "log-handler"))
 
-(defn listen []
+(defn demo []
   (listen-to-logstash 3 esp-service log-statement log-handler))
